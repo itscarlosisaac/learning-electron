@@ -3,12 +3,15 @@ const path = require('path');
 const {setMainMenu} = require('./mainMenu');
 const windows = [];
 
+
 let mainWindow;
 
 function createBrowserWindow(browserWindowOpts) {
   let win = new BrowserWindow(Object.assign({
     width: 400,
     height: 400,
+    backgroundColor: '#2e2c29',
+    parent: mainWindow,
   }, browserWindowOpts ));
 
   windows.push(win);
@@ -29,13 +32,16 @@ function sendWindowCount(){
 app.on('ready', () => {
   mainWindow = new BrowserWindow({
     show: false,
+    backgroundColor: '#f4f4f4'
   });
   mainWindow.loadURL(path.join('file://', __dirname, 'index.html'))
 
-  mainWindow.on('ready-to-show', () => {
+  mainWindow.once('ready-to-show', () => {
     mainWindow.show();
+    mainWindow.backgroundColor = '#2e2c29';
   })
   setMainMenu(mainWindow);
   ipcMain.on('create-window', (event, props) => createBrowserWindow(props) );
   ipcMain.on('get-window-count', sendWindowCount)
+  // require('devtron').install();
 })
